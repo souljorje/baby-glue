@@ -11,6 +11,7 @@ type GlueActionsProps = {
   handleUnglue: () => unknown;
   isDepositBusy: boolean;
   isUnglueBusy: boolean;
+  isApproving: boolean;
   isConnected: boolean;
   isWrongChain: boolean;
 };
@@ -24,6 +25,7 @@ export function GlueActions({
   handleUnglue,
   isDepositBusy,
   isUnglueBusy,
+  isApproving,
   isConnected,
   isWrongChain
 }: GlueActionsProps) {
@@ -43,7 +45,7 @@ export function GlueActions({
         <p className="text-sm text-muted-foreground">Burn tokens to take your fair slice from the piggy bank.</p>
         <Input value={burnAmount} onChange={(event) => setBurnAmount(event.target.value)} placeholder="Token amount (ex: 10)" inputMode="decimal" />
         <Button onClick={handleUnglue} disabled={!isConnected || isWrongChain || isUnglueBusy} className="w-full">
-          {isUnglueBusy ? 'Burning...' : 'Burn Tokens For Share'}
+          {isApproving ? 'Approving...' : isUnglueBusy ? 'Burning...' : 'Burn Tokens For Share'}
         </Button>
       </Card>
     </section>

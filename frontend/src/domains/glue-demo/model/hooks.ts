@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { parseEther, parseUnits, type Address, zeroAddress } from 'viem';
-import { useAccount, useSendTransaction, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import { maxUint256, parseEther, parseUnits, type Address, type Hash, zeroAddress } from 'viem';
+import { useAccount, usePublicClient, useSendTransaction, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 import { CHAIN_ID, GLUE_ADDRESS, TOKEN_ABI, TOKEN_ADDRESS } from '@config/contracts';
 import { mascotStepSchema, type MascotStep } from './schemas';
 import { useGlueMetricsQuery } from './queries';
@@ -14,11 +14,17 @@ const mascotMessageMap: Record<MascotStep, string> = {
 };
 
 function mapErrorToKidMessage(errorMessage: string) {
-  if (errorMessage.toLowerCase().includes('rejected')) {
+  const normalizedMessage = errorMessage.toLowerCase();
+
+  if (normalizedMessage.includes('rejected')) {
     return 'You canceled in wallet. That is okay, try again when ready.';
   }
 
-  if (errorMessage.toLowerCase().includes('insufficient')) {
+  if (normalizedMessage.includes('allowance') || normalizedMessage.includes('noassetstransferred') || normalizedMessage.includes('0x2e659379')) {
+    return 'Please approve token unlock first, then I can burn for your share.';
+  }
+
+  if (normalizedMessage.includes('insufficient')) {
     return 'Not enough balance yet. Add funds or use a smaller amount.';
   }
 
@@ -27,11 +33,14 @@ function mapErrorToKidMessage(errorMessage: string) {
 
 export function useGlueDemo() {
   const { address, chain, isConnected } = useAccount();
+  const publicClient = usePublicClient();
 
   const [depositAmount, setDepositAmount] = useState('0.001');
   const [burnAmount, setBurnAmount] = useState('10');
   const [mascotStep, setMascotStep] = useState<MascotStep>('connect');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isApproving, setIsApproving] = useState(false);
+  const [unglueHash, setUnglueHash] = useState<Hash | undefined>();
 
   const isWrongChain = Boolean(chain && chain.id !== CHAIN_ID);
 
@@ -55,8 +64,7 @@ export function useGlueDemo() {
   } = useWaitForTransactionReceipt({ hash: depositHash });
 
   const {
-    writeContract,
-    data: unglueHash,
+    writeContractAsync,
     error: unglueWriteError,
     isPending: isUnglueWalletPending
   } = useWriteContract();
@@ -122,7 +130,7 @@ export function useGlueDemo() {
   }, [errorMessage, mascotStep]);
 
   const isDepositBusy = isDepositWalletPending || isDepositConfirming;
-  const isUnglueBusy = isUnglueWalletPending || isUnglueConfirming;
+  const isUnglueBusy = isApproving || isUnglueWalletPending || isUnglueConfirming;
 
   const handleDeposit = () => {
     if (!depositAmount || isWrongChain) {
@@ -138,22 +146,61 @@ export function useGlueDemo() {
     });
   };
 
-  const handleUnglue = () => {
-    if (!address || !burnAmount || isWrongChain) {
+  const handleUnglue = async () => {
+    if (!address || !burnAmount || isWrongChain || !publicClient) {
       return;
     }
 
     const decimals = metricsQuery.data?.decimals ?? 18;
+    const burnAmountWei = parseUnits(burnAmount, decimals);
 
     setMascotStep('unglue');
     setErrorMessage('');
+    setUnglueHash(undefined);
 
-    writeContract({
-      address: TOKEN_ADDRESS,
-      abi: TOKEN_ABI,
-      functionName: 'unglue',
-      args: [[zeroAddress], parseUnits(burnAmount, decimals), [], address]
-    });
+    try {
+      const allowance = await publicClient.readContract({
+        address: TOKEN_ADDRESS,
+        abi: TOKEN_ABI,
+        functionName: 'allowance',
+        args: [address, TOKEN_ADDRESS]
+      });
+
+      if (allowance < burnAmountWei) {
+        setIsApproving(true);
+        setErrorMessage('First we unlock your tokens. Approve in wallet.');
+
+        const approveHash = await writeContractAsync({
+          address: TOKEN_ADDRESS,
+          abi: TOKEN_ABI,
+          functionName: 'approve',
+          args: [TOKEN_ADDRESS, maxUint256]
+        });
+
+        await publicClient.waitForTransactionReceipt({ hash: approveHash });
+      }
+
+      setIsApproving(false);
+      setErrorMessage('');
+
+      const submittedUnglueHash = await writeContractAsync({
+        address: TOKEN_ADDRESS,
+        abi: TOKEN_ABI,
+        functionName: 'unglue',
+        args: [[zeroAddress], burnAmountWei, [], address]
+      });
+
+      setUnglueHash(submittedUnglueHash);
+    } catch (error) {
+      setIsApproving(false);
+      setMascotStep('warning');
+
+      if (error instanceof Error) {
+        setErrorMessage(mapErrorToKidMessage(error.message));
+      } else {
+        setErrorMessage('Transaction failed. Try one more time with a smaller amount.');
+      }
+    }
   };
 
   return {
@@ -168,6 +215,7 @@ export function useGlueDemo() {
     handleUnglue,
     isDepositBusy,
     isUnglueBusy,
+    isApproving,
     isDepositSuccess,
     isUnglueSuccess,
     mascotStep,

@@ -19,6 +19,7 @@ export function GlueDemoPanel() {
     handleUnglue,
     isDepositBusy,
     isUnglueBusy,
+    isApproving,
     isDepositSuccess,
     isUnglueSuccess,
     mascotStep,
@@ -64,6 +65,7 @@ export function GlueDemoPanel() {
         handleUnglue={handleUnglue}
         isDepositBusy={isDepositBusy}
         isUnglueBusy={isUnglueBusy}
+        isApproving={isApproving}
         isConnected={isConnected}
         isWrongChain={isWrongChain}
       />

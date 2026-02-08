@@ -18,5 +18,5 @@ export function calculateBackingPerToken(glueEthBalance: bigint, totalSupply: bi
   const weiPerToken = (glueEthBalance * precision) / totalSupply;
   const asNumber = Number(formatUnits(weiPerToken, 18));
 
-  return formatNumber(asNumber, 6);
+  return formatNumber(asNumber, 12);
 }
