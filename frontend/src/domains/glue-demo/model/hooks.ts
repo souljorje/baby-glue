@@ -7,8 +7,9 @@ import { useGlueMetricsQuery } from './queries';
 
 const mascotMessageMap: Record<MascotStep, string> = {
   connect: 'Hi! Connect your wallet so I can show your piggy bank.',
-  deposit: 'Step 1: put ETH into the piggy bank. Bigger piggy bank means bigger share.',
-  unglue: 'Step 2: burn some tokens to claim your fair slice of the piggy bank.',
+  claim: 'Step 1: claim your demo tokens so you have pizza slices to play with.',
+  deposit: 'Step 2: put ETH into the piggy bank. Bigger piggy bank means bigger share.',
+  unglue: 'Step 3: burn some tokens to claim your fair slice of the piggy bank.',
   done: 'Great job! You completed the full Glue story.',
   warning: 'Oops! We hit a tiny bump. Read the helper line below.'
 };
@@ -28,6 +29,10 @@ function mapErrorToKidMessage(errorMessage: string) {
     return 'Not enough balance yet. Add funds or use a smaller amount.';
   }
 
+  if (normalizedMessage.includes('already claimed')) {
+    return 'This wallet already got demo tokens. You can continue to the next step.';
+  }
+
   return 'Transaction failed. Try one more time with a smaller amount.';
 }
 
@@ -40,6 +45,7 @@ export function useGlueDemo() {
   const [mascotStep, setMascotStep] = useState<MascotStep>('connect');
   const [errorMessage, setErrorMessage] = useState('');
   const [isApproving, setIsApproving] = useState(false);
+  const [claimHash, setClaimHash] = useState<Hash | undefined>();
   const [unglueHash, setUnglueHash] = useState<Hash | undefined>();
 
   const isWrongChain = Boolean(chain && chain.id !== CHAIN_ID);
@@ -64,6 +70,18 @@ export function useGlueDemo() {
   } = useWaitForTransactionReceipt({ hash: depositHash });
 
   const {
+    writeContractAsync: writeClaimContractAsync,
+    error: claimWriteError,
+    isPending: isClaimWalletPending
+  } = useWriteContract();
+
+  const {
+    isLoading: isClaimConfirming,
+    isSuccess: isClaimSuccess,
+    error: claimConfirmError
+  } = useWaitForTransactionReceipt({ hash: claimHash });
+
+  const {
     writeContractAsync,
     error: unglueWriteError,
     isPending: isUnglueWalletPending
@@ -74,6 +92,8 @@ export function useGlueDemo() {
     isSuccess: isUnglueSuccess,
     error: unglueConfirmError
   } = useWaitForTransactionReceipt({ hash: unglueHash });
+
+  const hasTokens = (metricsQuery.data?.userBalance ?? 0n) > 0n;
 
   useEffect(() => {
     if (!isConnected) {
@@ -94,6 +114,12 @@ export function useGlueDemo() {
       return;
     }
 
+    if (!hasTokens && !isClaimSuccess) {
+      setMascotStep('claim');
+      setErrorMessage('');
+      return;
+    }
+
     if (isDepositSuccess) {
       setMascotStep('unglue');
       setErrorMessage('');
@@ -102,16 +128,16 @@ export function useGlueDemo() {
 
     setMascotStep('deposit');
     setErrorMessage('');
-  }, [isConnected, isWrongChain, isDepositSuccess, isUnglueSuccess]);
+  }, [hasTokens, isClaimSuccess, isConnected, isWrongChain, isDepositSuccess, isUnglueSuccess]);
 
   useEffect(() => {
-    if (isDepositSuccess || isUnglueSuccess) {
+    if (isClaimSuccess || isDepositSuccess || isUnglueSuccess) {
       metricsQuery.mutate();
     }
-  }, [isDepositSuccess, isUnglueSuccess, metricsQuery]);
+  }, [isClaimSuccess, isDepositSuccess, isUnglueSuccess, metricsQuery]);
 
   useEffect(() => {
-    const firstError = depositWriteError || depositConfirmError || unglueWriteError || unglueConfirmError;
+    const firstError = claimWriteError || claimConfirmError || depositWriteError || depositConfirmError || unglueWriteError || unglueConfirmError;
 
     if (!firstError) {
       return;
@@ -119,7 +145,7 @@ export function useGlueDemo() {
 
     setMascotStep('warning');
     setErrorMessage(mapErrorToKidMessage(firstError.message));
-  }, [depositWriteError, depositConfirmError, unglueWriteError, unglueConfirmError]);
+  }, [claimWriteError, claimConfirmError, depositWriteError, depositConfirmError, unglueWriteError, unglueConfirmError]);
 
   const mascotMessage = useMemo(() => {
     if (errorMessage) {
@@ -129,8 +155,38 @@ export function useGlueDemo() {
     return mascotMessageMap[mascotStepSchema.parse(mascotStep)];
   }, [errorMessage, mascotStep]);
 
+  const isClaimBusy = isClaimWalletPending || isClaimConfirming;
   const isDepositBusy = isDepositWalletPending || isDepositConfirming;
   const isUnglueBusy = isApproving || isUnglueWalletPending || isUnglueConfirming;
+
+  const handleClaimDemoTokens = async () => {
+    if (isWrongChain) {
+      return;
+    }
+
+    setMascotStep('claim');
+    setErrorMessage('');
+    setClaimHash(undefined);
+
+    try {
+      const submittedClaimHash = await writeClaimContractAsync({
+        address: TOKEN_ADDRESS,
+        abi: TOKEN_ABI,
+        functionName: 'claimDemoTokens',
+        args: []
+      });
+
+      setClaimHash(submittedClaimHash);
+    } catch (error) {
+      setMascotStep('warning');
+
+      if (error instanceof Error) {
+        setErrorMessage(mapErrorToKidMessage(error.message));
+      } else {
+        setErrorMessage('Transaction failed. Try one more time with a smaller amount.');
+      }
+    }
+  };
 
   const handleDeposit = () => {
     if (!depositAmount || isWrongChain) {
@@ -211,11 +267,15 @@ export function useGlueDemo() {
     setDepositAmount,
     burnAmount,
     setBurnAmount,
+    handleClaimDemoTokens,
     handleDeposit,
     handleUnglue,
+    hasTokens,
+    isClaimBusy,
     isDepositBusy,
     isUnglueBusy,
     isApproving,
+    isClaimSuccess,
     isDepositSuccess,
     isUnglueSuccess,
     mascotStep,

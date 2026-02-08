@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const mascotStepSchema = z.enum(['connect', 'deposit', 'unglue', 'done', 'warning']);
+export const mascotStepSchema = z.enum(['connect', 'claim', 'deposit', 'unglue', 'done', 'warning']);
 
 export const glueMetricsSchema = z.object({
   totalSupply: z.bigint(),

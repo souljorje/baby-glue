@@ -50,6 +50,13 @@ export const TOKEN_ABI = [
   {
     type: 'function',
     stateMutability: 'nonpayable',
+    name: 'claimDemoTokens',
+    inputs: [],
+    outputs: []
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
     name: 'unglue',
     inputs: [
       { name: 'collaterals', type: 'address[]' },

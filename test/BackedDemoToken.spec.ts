@@ -24,6 +24,19 @@ describe('BackedDemoToken', () => {
     expect(await token.getGlue()).to.not.equal(ethers.ZeroAddress);
   });
 
+  it('allows each wallet to claim demo tokens once', async () => {
+    const { owner, token } = await deployFixture();
+    const [, secondWallet] = await ethers.getSigners();
+
+    await token.connect(secondWallet).claimDemoTokens();
+
+    expect(await token.balanceOf(secondWallet.address)).to.equal(await token.DEMO_CLAIM_AMOUNT());
+
+    await expect(token.connect(secondWallet).claimDemoTokens()).to.be.revertedWith('Demo tokens already claimed');
+
+    expect(await token.balanceOf(owner.address)).to.equal(await token.INITIAL_SUPPLY());
+  });
+
   it('allows proportional ETH redemption with unglue', async () => {
     const { owner, token } = await deployFixture();
     const glueAddress = await token.getGlue();
