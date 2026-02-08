@@ -3,12 +3,16 @@ import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { cn } from '@lib/cn';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-xl font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue disabled:pointer-events-none disabled:opacity-40',
   {
     variants: {
       variant: {
-        primary: 'bg-brand text-brand-foreground hover:brightness-95',
-        ghost: 'bg-surface text-foreground border border-border hover:bg-muted'
+        primary:
+          'bg-brand text-brand-foreground hover:bg-brand-hover hover:-translate-y-px hover:shadow-glow-lime active:translate-y-0',
+        secondary:
+          'bg-pink text-brand-foreground hover:bg-pink-hover hover:-translate-y-px hover:shadow-glow-pink active:translate-y-0',
+        ghost:
+          'bg-surface text-foreground border border-border hover:bg-surface-hover hover:border-text-muted'
       },
       size: {
         md: 'h-11 px-4 text-sm',

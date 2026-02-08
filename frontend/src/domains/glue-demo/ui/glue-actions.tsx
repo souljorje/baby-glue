@@ -33,7 +33,7 @@ export function GlueActions({
     <section className="grid gap-3 sm:grid-cols-2">
       <Card className="space-y-3">
         <h3 className="text-base font-black text-foreground">Step 1: Fill Piggy Bank</h3>
-        <p className="text-sm text-muted-foreground">Put ETH into Glue to grow the shared backing pool.</p>
+        <p className="text-sm text-text-secondary">Put ETH into Glue to grow the shared backing pool.</p>
         <Input value={depositAmount} onChange={(event) => setDepositAmount(event.target.value)} placeholder="ETH amount (ex: 0.001)" inputMode="decimal" />
         <Button onClick={handleDeposit} disabled={!isConnected || isWrongChain || isDepositBusy} className="w-full">
           {isDepositBusy ? 'Sending...' : 'Put ETH In Piggy Bank'}
@@ -42,9 +42,9 @@ export function GlueActions({
 
       <Card className="space-y-3">
         <h3 className="text-base font-black text-foreground">Step 2: Burn for Share</h3>
-        <p className="text-sm text-muted-foreground">Burn tokens to take your fair slice from the piggy bank.</p>
+        <p className="text-sm text-text-secondary">Burn tokens to take your fair slice from the piggy bank.</p>
         <Input value={burnAmount} onChange={(event) => setBurnAmount(event.target.value)} placeholder="Token amount (ex: 10)" inputMode="decimal" />
-        <Button onClick={handleUnglue} disabled={!isConnected || isWrongChain || isUnglueBusy} className="w-full">
+        <Button variant="secondary" onClick={handleUnglue} disabled={!isConnected || isWrongChain || isUnglueBusy} className="w-full">
           {isApproving ? 'Approving...' : isUnglueBusy ? 'Burning...' : 'Burn Tokens For Share'}
         </Button>
       </Card>

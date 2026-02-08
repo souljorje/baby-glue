@@ -35,9 +35,9 @@ export function GlueDemoPanel() {
     <section className="space-y-4">
       <div className="flex flex-col items-start justify-between gap-3 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center">
         <div>
-          <p className="text-sm font-semibold text-muted-foreground">Connect wallet on Base Sepolia</p>
-          <p className="text-sm text-muted-foreground">Token: {TOKEN_ADDRESS}</p>
-          <p className="text-sm text-muted-foreground">Glue vault: {GLUE_ADDRESS}</p>
+          <p className="text-sm font-semibold text-text-secondary">Connect wallet on Base Sepolia</p>
+          <p className="text-xs font-mono text-muted-foreground break-all">Token: {TOKEN_ADDRESS}</p>
+          <p className="text-xs font-mono text-muted-foreground break-all">Glue vault: {GLUE_ADDRESS}</p>
         </div>
         <ConnectButton />
       </div>
@@ -70,9 +70,13 @@ export function GlueDemoPanel() {
         isWrongChain={isWrongChain}
       />
 
-      <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-        <p className="rounded-xl border border-border bg-surface px-3 py-2">Deposit status: {isDepositSuccess ? 'Done' : isDepositBusy ? 'Working' : 'Waiting'}</p>
-        <p className="rounded-xl border border-border bg-surface px-3 py-2">Unglue status: {isUnglueSuccess ? 'Done' : isUnglueBusy ? 'Working' : 'Waiting'}</p>
+      <div className="grid gap-2 text-sm sm:grid-cols-2">
+        <p className="rounded-xl border border-border bg-surface px-3 py-2 text-text-secondary">
+          Deposit status: <span className={isDepositSuccess ? 'text-brand font-semibold' : isDepositBusy ? 'text-yellow font-semibold' : 'text-muted-foreground'}>{isDepositSuccess ? 'Done' : isDepositBusy ? 'Working' : 'Waiting'}</span>
+        </p>
+        <p className="rounded-xl border border-border bg-surface px-3 py-2 text-text-secondary">
+          Unglue status: <span className={isUnglueSuccess ? 'text-brand font-semibold' : isUnglueBusy ? 'text-yellow font-semibold' : 'text-muted-foreground'}>{isUnglueSuccess ? 'Done' : isUnglueBusy ? 'Working' : 'Waiting'}</span>
+        </p>
       </div>
     </section>
   );

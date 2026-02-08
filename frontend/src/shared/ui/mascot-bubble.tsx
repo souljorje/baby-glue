@@ -7,26 +7,29 @@ type MascotBubbleProps = {
   tone?: 'normal' | 'success' | 'warning';
 };
 
-const toneClassMap = {
+const toneBorderMap = {
   normal: 'border-border',
-  success: 'border-success',
-  warning: 'border-warning'
+  success: 'border-brand',
+  warning: 'border-yellow'
+} as const;
+
+const toneGlowMap = {
+  normal: '',
+  success: 'shadow-glow-lime',
+  warning: ''
 } as const;
 
 export function MascotBubble({ title, message, tone = 'normal' }: MascotBubbleProps) {
   return (
-    <Card className={`relative flex items-start gap-3 border-2 ${toneClassMap[tone]} bg-muted`}>
+    <Card className={`flex items-start gap-4 border ${toneBorderMap[tone]} ${toneGlowMap[tone]} bg-surface`}>
       <img
         src={mascotImg}
         alt="Glue Mascot"
-        className="h-12 w-12 shrink-0 object-contain drop-shadow-md"
+        className="h-12 w-12 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(124,255,91,0.3)]"
       />
-      <div className="relative">
-        <div className="absolute -left-5 top-3 h-3 w-3 rotate-45 bg-muted-foreground/10" />
-        <div className="rounded-xl bg-muted-foreground/10 px-3 py-2">
-          <p className="text-sm font-black text-foreground">{title}</p>
-          <p className="text-sm text-muted-foreground">{message}</p>
-        </div>
+      <div className="min-w-0">
+        <p className="text-sm font-black text-brand">{title}</p>
+        <p className="mt-0.5 text-sm text-text-secondary">{message}</p>
       </div>
     </Card>
   );

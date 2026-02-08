@@ -7,30 +7,31 @@ type GlueMetricsProps = {
   isLoading: boolean;
 };
 
+const metricMeta = [
+  { label: 'Piggy Bank ETH', suffix: ' ETH', accent: 'text-brand' },
+  { label: 'My Tokens', suffix: '', accent: 'text-pink' },
+  { label: 'All Tokens', suffix: '', accent: 'text-blue' },
+  { label: 'Backing Per Token', suffix: ' ETH', accent: 'text-yellow' }
+] as const;
+
 export function GlueMetricsPanel({ metrics, isLoading }: GlueMetricsProps) {
   const totalSupply = metrics ? formatTokenAmount(metrics.totalSupply, metrics.decimals, 2) : '--';
   const userBalance = metrics ? formatTokenAmount(metrics.userBalance, metrics.decimals, 4) : '--';
   const glueBalance = metrics ? formatTokenAmount(metrics.glueEthBalance, 18, 4) : '--';
   const backingPerToken = metrics ? metrics.estimatedBackingPerToken : '--';
 
+  const values = [glueBalance, userBalance, totalSupply, backingPerToken];
+
   return (
     <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <Card>
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Piggy Bank ETH</p>
-        <p className="mt-2 text-2xl font-black text-foreground">{isLoading ? '...' : `${glueBalance} ETH`}</p>
-      </Card>
-      <Card>
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">My Tokens</p>
-        <p className="mt-2 text-2xl font-black text-foreground">{isLoading ? '...' : userBalance}</p>
-      </Card>
-      <Card>
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">All Tokens</p>
-        <p className="mt-2 text-2xl font-black text-foreground">{isLoading ? '...' : totalSupply}</p>
-      </Card>
-      <Card>
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Backing Per Token</p>
-        <p className="mt-2 text-2xl font-black text-foreground">{isLoading ? '...' : `${backingPerToken} ETH`}</p>
-      </Card>
+      {metricMeta.map((meta, i) => (
+        <Card key={meta.label}>
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{meta.label}</p>
+          <p className={`mt-2 text-2xl font-black ${meta.accent}`}>
+            {isLoading ? '...' : `${values[i]}${meta.suffix}`}
+          </p>
+        </Card>
+      ))}
     </section>
   );
 }

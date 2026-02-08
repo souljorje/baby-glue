@@ -1,41 +1,69 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-surface: hsl(var(--surface));
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-border: hsl(var(--border));
-  --color-brand: hsl(var(--brand));
-  --color-brand-foreground: hsl(var(--brand-foreground));
-  --color-success: hsl(var(--success));
-  --color-warning: hsl(var(--warning));
-  --color-danger: hsl(var(--danger));
+  --color-background: var(--bg-950);
+  --color-foreground: var(--text-50);
+  --color-surface: var(--surface-900);
+  --color-surface-hover: var(--surface-800);
+  --color-muted: var(--surface-800);
+  --color-muted-foreground: var(--text-500);
+  --color-border: var(--border-700);
+  --color-brand: var(--brand-lime-500);
+  --color-brand-hover: var(--brand-lime-700);
+  --color-brand-foreground: var(--bg-950);
+  --color-pink: var(--brand-pink-500);
+  --color-pink-hover: var(--brand-pink-700);
+  --color-blue: var(--brand-blue-500);
+  --color-blue-hover: var(--brand-blue-700);
+  --color-yellow: var(--brand-yellow-400);
+  --color-success: #39FF14;
+  --color-warning: #FFE600;
+  --color-danger: var(--error-500);
+  --color-text-secondary: var(--text-300);
+  --color-text-muted: var(--text-500);
+  --color-glow-lime: var(--glow-lime);
+  --color-glow-pink: var(--glow-pink);
+  --color-glow-blue: var(--glow-blue);
   --radius-xl: 1rem;
-  --shadow-float: 0 10px 30px -15px hsl(var(--foreground) / 0.3);
+  --shadow-float: 0 4px 24px -8px rgba(0, 0, 0, 0.5);
+  --shadow-glow-lime: 0 0 20px rgba(57, 255, 20, 0.15);
+  --shadow-glow-pink: 0 0 20px rgba(255, 79, 216, 0.15);
+  --ease-bounce: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 :root {
-  --background: 44 100% 95%;
-  --foreground: 28 33% 18%;
-  --surface: 0 0% 100%;
-  --muted: 44 60% 89%;
-  --muted-foreground: 28 20% 38%;
-  --border: 34 34% 79%;
-  --brand: 22 89% 56%;
-  --brand-foreground: 0 0% 100%;
-  --success: 145 42% 40%;
-  --warning: 35 95% 50%;
-  --danger: 4 75% 58%;
+  --brand-lime-500: #39FF14;
+  --brand-lime-700: #18C90C;
+  --brand-pink-500: #FF4FD8;
+  --brand-pink-700: #D826B6;
+  --brand-blue-500: #00B7FF;
+  --brand-blue-700: #0089C7;
+  --brand-yellow-400: #FFE600;
+
+  --bg-950: #0B0B12;
+  --surface-900: #131427;
+  --surface-800: #1C1E38;
+  --border-700: #2B2E55;
+  --text-50: #F6F7FF;
+  --text-300: #B8BCE6;
+  --text-500: #7C82B8;
+
+  --glow-lime: #7CFF5B;
+  --glow-pink: #FF8AE9;
+  --glow-blue: #66D9FF;
+
+  --error-500: #FF3B5C;
 }
 
 * {
-  @apply border-border;
+  border-color: var(--border-700);
 }
 
 body {
-  @apply bg-background text-foreground;
+  background-color: var(--bg-950);
+  color: var(--text-50);
   font-family: 'Comic Neue', 'Trebuchet MS', 'Verdana', sans-serif;
-  background-image: radial-gradient(circle at 10% 20%, hsl(var(--muted)) 0%, transparent 30%), radial-gradient(circle at 90% 10%, hsl(var(--brand) / 0.15) 0%, transparent 25%);
+  background-image:
+    radial-gradient(ellipse 60% 40% at 10% 0%, rgba(57, 255, 20, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 90% 10%, rgba(255, 79, 216, 0.03) 0%, transparent 50%);
 }
