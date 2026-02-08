@@ -8,10 +8,10 @@ type GlueMetricsProps = {
 };
 
 const metricMeta = [
-  { label: 'Piggy Bank ETH', suffix: ' ETH', accent: 'text-brand' },
-  { label: 'My Tokens', suffix: '', accent: 'text-pink' },
-  { label: 'All Tokens', suffix: '', accent: 'text-blue' },
-  { label: 'Backing Per Token', suffix: ' ETH', accent: 'text-yellow' }
+  { label: 'Cookie Jar ETH', suffix: ' ETH', accent: 'text-brand' },
+  { label: 'My Coupons', suffix: '', accent: 'text-pink' },
+  { label: 'All Coupons', suffix: '', accent: 'text-blue' },
+  { label: 'Cookies Per Coupon', suffix: ' ETH', accent: 'text-yellow' }
 ] as const;
 
 export function GlueMetricsPanel({ metrics, isLoading }: GlueMetricsProps) {

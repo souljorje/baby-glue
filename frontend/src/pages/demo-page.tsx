@@ -12,7 +12,7 @@ export function DemoPage() {
           Baby Glue Demo
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base text-text-secondary">
-          Learn by clicking: add ETH to the piggy bank, then burn tokens to claim your share.
+          Learn by clicking: bake cookies into the jar, then crumble coupons to grab your share.
         </p>
       </header>
       <GlueDemoPanel />

@@ -10,9 +10,9 @@ import { MascotBubble } from '@ui/mascot-bubble';
 
 const journeySteps = [
   { id: 'connect', label: 'Connect Wallet' },
-  { id: 'claim', label: 'Get Demo Tokens' },
-  { id: 'deposit', label: 'Fill Piggy Bank' },
-  { id: 'unglue', label: 'Burn For Share' },
+  { id: 'claim', label: 'Get Cookie Coupons' },
+  { id: 'deposit', label: 'Fill Cookie Jar' },
+  { id: 'unglue', label: 'Crumble For Cookies' },
   { id: 'done', label: 'Journey Complete' }
 ] as const;
 
@@ -93,32 +93,32 @@ export function GlueDemoPanel() {
 
       {shouldShowClaimStep && (
         <Card className="space-y-3">
-          <h3 className="text-base font-black text-foreground">Step 2: Get Demo Tokens</h3>
-          <p className="text-sm text-muted-foreground">This wallet has no tokens yet. Claim free demo tokens first.</p>
+          <h3 className="text-base font-black text-foreground">Step 2: Get Cookie Coupons</h3>
+          <p className="text-sm text-muted-foreground">This wallet has no coupons yet. Claim free cookie coupons first.</p>
           <Button onClick={handleClaimDemoTokens} disabled={isClaimBusy} className="w-full">
-            {isClaimBusy ? 'Claiming...' : 'Get Demo Tokens'}
+            {isClaimBusy ? 'Claiming...' : 'Get Cookie Coupons'}
           </Button>
         </Card>
       )}
 
       {isConfigured && isConnected && !isWrongChain && hasTokens && !isDepositDone && (
         <Card className="space-y-3">
-          <h3 className="text-base font-black text-foreground">Step 3: Fill Piggy Bank</h3>
-          <p className="text-sm text-muted-foreground">Put ETH into Glue to grow shared backing for all tokens.</p>
+          <h3 className="text-base font-black text-foreground">Step 3: Fill the Cookie Jar</h3>
+          <p className="text-sm text-muted-foreground">Bake cookies into the jar to grow the shared pool.</p>
           <Input value={depositAmount} onChange={(event) => setDepositAmount(event.target.value)} placeholder="ETH amount (ex: 0.001)" inputMode="decimal" />
           <Button onClick={handleDeposit} disabled={isDepositBusy} className="w-full">
-            {isDepositBusy ? 'Sending...' : 'Put ETH In Piggy Bank'}
+            {isDepositBusy ? 'Baking...' : 'Bake Cookies Into Jar'}
           </Button>
         </Card>
       )}
 
       {isConfigured && isConnected && !isWrongChain && hasTokens && isDepositDone && !isJourneyDone && (
         <Card className="space-y-3">
-          <h3 className="text-base font-black text-foreground">Step 4: Burn For Your Share</h3>
-          <p className="text-sm text-muted-foreground">Burn tokens and claim your fair part of the piggy bank.</p>
-          <Input value={burnAmount} onChange={(event) => setBurnAmount(event.target.value)} placeholder="Token amount (ex: 10)" inputMode="decimal" />
+          <h3 className="text-base font-black text-foreground">Step 4: Crumble For Your Cookies</h3>
+          <p className="text-sm text-muted-foreground">Crumble your coupons and grab your fair share from the jar.</p>
+          <Input value={burnAmount} onChange={(event) => setBurnAmount(event.target.value)} placeholder="Coupon amount (ex: 10)" inputMode="decimal" />
           <Button onClick={handleUnglue} disabled={isUnglueBusy} className="w-full">
-            {isApproving ? 'Approving...' : isUnglueBusy ? 'Burning...' : 'Burn Tokens For Share'}
+            {isApproving ? 'Approving...' : isUnglueBusy ? 'Crumbling...' : 'Crumble Coupons'}
           </Button>
         </Card>
       )}
@@ -126,7 +126,7 @@ export function GlueDemoPanel() {
       {isConfigured && isConnected && !isWrongChain && isJourneyDone && (
         <Card className="space-y-3">
           <h3 className="text-base font-black text-foreground">Step 5: You Did It</h3>
-          <p className="text-sm text-muted-foreground">You finished the full Baby Glue journey: deposit, then unglue.</p>
+          <p className="text-sm text-muted-foreground">You finished the full Cookie Jar adventure: bake, then crumble!</p>
         </Card>
       )}
 
@@ -134,9 +134,9 @@ export function GlueDemoPanel() {
         <div className="space-y-3">
           <GlueMetricsPanel metrics={metricsQuery.data} isLoading={metricsQuery.isLoading} />
           <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-3">
-            <p className="rounded-xl border border-border bg-surface px-3 py-2">Claim status: {isClaimSuccess || hasTokens ? 'Done' : isClaimBusy ? 'Working' : 'Waiting'}</p>
-            <p className="rounded-xl border border-border bg-surface px-3 py-2">Deposit status: {isDepositSuccess ? 'Done' : isDepositBusy ? 'Working' : 'Waiting'}</p>
-            <p className="rounded-xl border border-border bg-surface px-3 py-2">Unglue status: {isUnglueSuccess ? 'Done' : isUnglueBusy ? 'Working' : 'Waiting'}</p>
+            <p className="rounded-xl border border-border bg-surface px-3 py-2">Coupons: {isClaimSuccess || hasTokens ? 'Done' : isClaimBusy ? 'Working' : 'Waiting'}</p>
+            <p className="rounded-xl border border-border bg-surface px-3 py-2">Baking: {isDepositSuccess ? 'Done' : isDepositBusy ? 'Working' : 'Waiting'}</p>
+            <p className="rounded-xl border border-border bg-surface px-3 py-2">Crumble: {isUnglueSuccess ? 'Done' : isUnglueBusy ? 'Working' : 'Waiting'}</p>
           </div>
         </div>
       )}

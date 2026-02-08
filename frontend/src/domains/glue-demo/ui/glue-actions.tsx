@@ -32,20 +32,20 @@ export function GlueActions({
   return (
     <section className="grid gap-3 sm:grid-cols-2">
       <Card className="space-y-3">
-        <h3 className="text-base font-black text-foreground">Step 1: Fill Piggy Bank</h3>
-        <p className="text-sm text-text-secondary">Put ETH into Glue to grow the shared backing pool.</p>
+        <h3 className="text-base font-black text-foreground">Step 1: Fill the Cookie Jar</h3>
+        <p className="text-sm text-text-secondary">Bake cookies into the jar to grow the shared pool.</p>
         <Input value={depositAmount} onChange={(event) => setDepositAmount(event.target.value)} placeholder="ETH amount (ex: 0.001)" inputMode="decimal" />
         <Button onClick={handleDeposit} disabled={!isConnected || isWrongChain || isDepositBusy} className="w-full">
-          {isDepositBusy ? 'Sending...' : 'Put ETH In Piggy Bank'}
+          {isDepositBusy ? 'Baking...' : 'Bake Cookies Into Jar'}
         </Button>
       </Card>
 
       <Card className="space-y-3">
-        <h3 className="text-base font-black text-foreground">Step 2: Burn for Share</h3>
-        <p className="text-sm text-text-secondary">Burn tokens to take your fair slice from the piggy bank.</p>
-        <Input value={burnAmount} onChange={(event) => setBurnAmount(event.target.value)} placeholder="Token amount (ex: 10)" inputMode="decimal" />
+        <h3 className="text-base font-black text-foreground">Step 2: Crumble for Cookies</h3>
+        <p className="text-sm text-text-secondary">Crumble your coupons to grab your fair share from the jar.</p>
+        <Input value={burnAmount} onChange={(event) => setBurnAmount(event.target.value)} placeholder="Coupon amount (ex: 10)" inputMode="decimal" />
         <Button variant="secondary" onClick={handleUnglue} disabled={!isConnected || isWrongChain || isUnglueBusy} className="w-full">
-          {isApproving ? 'Approving...' : isUnglueBusy ? 'Burning...' : 'Burn Tokens For Share'}
+          {isApproving ? 'Approving...' : isUnglueBusy ? 'Crumbling...' : 'Crumble Coupons'}
         </Button>
       </Card>
     </section>
