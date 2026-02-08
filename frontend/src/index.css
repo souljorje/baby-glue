@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-surface: hsl(var(--surface));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-border: hsl(var(--border));
+  --color-brand: hsl(var(--brand));
+  --color-brand-foreground: hsl(var(--brand-foreground));
+  --color-success: hsl(var(--success));
+  --color-warning: hsl(var(--warning));
+  --color-danger: hsl(var(--danger));
+  --radius-xl: 1rem;
+  --shadow-float: 0 10px 30px -15px hsl(var(--foreground) / 0.3);
+}
+
+:root {
+  --background: 44 100% 95%;
+  --foreground: 28 33% 18%;
+  --surface: 0 0% 100%;
+  --muted: 44 60% 89%;
+  --muted-foreground: 28 20% 38%;
+  --border: 34 34% 79%;
+  --brand: 22 89% 56%;
+  --brand-foreground: 0 0% 100%;
+  --success: 145 42% 40%;
+  --warning: 35 95% 50%;
+  --danger: 4 75% 58%;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground;
+  font-family: 'Comic Neue', 'Trebuchet MS', 'Verdana', sans-serif;
+  background-image: radial-gradient(circle at 10% 20%, hsl(var(--muted)) 0%, transparent 30%), radial-gradient(circle at 90% 10%, hsl(var(--brand) / 0.15) 0%, transparent 25%);
+}
