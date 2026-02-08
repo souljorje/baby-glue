@@ -4,20 +4,20 @@ import { MascotBubble } from '@ui/mascot-bubble';
 const conceptItems = [
   {
     emoji: '\u{1F355}',
-    title: 'Token = Pizza Slice',
-    text: 'Each token is one tiny slice of the whole pizza.',
+    title: 'Token = Cookie Coupon',
+    text: 'Each coupon is your tiny ticket to the cookie jar.',
     accent: 'text-brand'
   },
   {
     emoji: '\u{1F4B0}',
-    title: 'Glue = Piggy Bank',
-    text: 'ETH in the Glue vault is money inside the shared piggy bank.',
+    title: 'Glue = Magic Cookie Jar',
+    text: 'ETH in Glue is the cookie power stored inside the shared jar.',
     accent: 'text-pink'
   },
   {
     emoji: '\u{1F525}',
-    title: 'Burn = Trade Back',
-    text: 'When you burn tokens, you trade slices back for matching ETH.',
+    title: 'Crumble = Get Cookies',
+    text: 'When you crumble coupons, you grab your matching cookie share.',
     accent: 'text-blue'
   }
 ] as const;

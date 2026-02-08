@@ -75,6 +75,48 @@ body {
   100% { filter: drop-shadow(0 0 12px rgba(124, 255, 91, 0.25)) hue-rotate(0deg)   brightness(1); }
 }
 
+@keyframes step-swap {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes metric-pop {
+  0% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.04);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8) rotate(0deg);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(46px) scale(1) rotate(220deg);
+  }
+}
+
 .mascot-glow {
   animation: mascot-shimmer 6s ease-in-out infinite;
 }

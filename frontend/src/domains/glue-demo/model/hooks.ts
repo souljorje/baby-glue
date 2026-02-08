@@ -6,11 +6,11 @@ import { mascotStepSchema, type MascotStep } from './schemas';
 import { useGlueMetricsQuery } from './queries';
 
 const mascotMessageMap: Record<MascotStep, string> = {
-  connect: 'Hi! Connect your wallet so I can show your piggy bank.',
-  claim: 'Step 1: claim your demo tokens so you have pizza slices to play with.',
-  deposit: 'Step 2: put ETH into the piggy bank. Bigger piggy bank means bigger share.',
-  unglue: 'Step 3: burn some tokens to claim your fair slice of the piggy bank.',
-  done: 'Great job! You completed the full Glue story.',
+  connect: 'Hi! Connect your wallet so I can show the Cookie Jar.',
+  claim: 'Grab your cookie coupons so you have something to play with!',
+  deposit: 'Bake cookies and fill the Magic Jar. Bigger jar = bigger share!',
+  unglue: 'Crumble a coupon to grab your fair share of cookies from the jar.',
+  done: 'Yummy! You finished the full Cookie Jar adventure!',
   warning: 'Oops! We hit a tiny bump. Read the helper line below.'
 };
 
@@ -22,7 +22,7 @@ function mapErrorToKidMessage(errorMessage: string) {
   }
 
   if (normalizedMessage.includes('allowance') || normalizedMessage.includes('noassetstransferred') || normalizedMessage.includes('0x2e659379')) {
-    return 'Please approve token unlock first, then I can burn for your share.';
+    return 'Please approve coupon unlock first, then I can crumble for your cookies.';
   }
 
   if (normalizedMessage.includes('insufficient')) {
@@ -30,7 +30,7 @@ function mapErrorToKidMessage(errorMessage: string) {
   }
 
   if (normalizedMessage.includes('already claimed')) {
-    return 'This wallet already got demo tokens. You can continue to the next step.';
+    return 'This wallet already got cookie coupons. You can continue to the next step.';
   }
 
   return 'Transaction failed. Try one more time with a smaller amount.';
@@ -224,7 +224,7 @@ export function useGlueDemo() {
 
       if (allowance < burnAmountWei) {
         setIsApproving(true);
-        setErrorMessage('First we unlock your tokens. Approve in wallet.');
+        setErrorMessage('First we unlock your coupons. Approve in wallet.');
 
         const approveHash = await writeContractAsync({
           address: TOKEN_ADDRESS,
@@ -247,6 +247,8 @@ export function useGlueDemo() {
       });
 
       setUnglueHash(submittedUnglueHash);
+      await publicClient.waitForTransactionReceipt({ hash: submittedUnglueHash });
+      await metricsQuery.mutate();
     } catch (error) {
       setIsApproving(false);
       setMascotStep('warning');
