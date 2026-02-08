@@ -1,4 +1,5 @@
 import { GlueDemoPanel } from '@d/glue-demo/widgets/glue-demo-panel';
+import mascotImg from '../public/ChatGPTImage.png';
 
 export function DemoPage() {
   return (
@@ -15,6 +16,11 @@ export function DemoPage() {
         </p>
       </header>
       <GlueDemoPanel />
+      <img
+        src={mascotImg}
+        alt="Glue Mascot"
+        className="mascot-glow pointer-events-none fixed bottom-4 left-4 z-50 h-56 w-56 rotate-12 object-contain opacity-80 sm:h-72 sm:w-72"
+      />
     </main>
   );
 }
